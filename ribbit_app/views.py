@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from ribbit_app.forms import UserCreateForm, AuthenticateForm, RibbitForm
 from ribbit_app.models import Ribbit
+from django.contrib.auth.decorators import login_required
 
 def index(request, auth_form=None, user_form=None):
 
@@ -35,7 +36,7 @@ def logout_view(request):
 	logout(request)
 	return redirect('/')
 
-def sognup_view(request):
+def signup_view(request):
 	user_form = UserCreateForm(data=request.POST)
 
 	if request.method == 'POST':
@@ -48,3 +49,26 @@ def sognup_view(request):
 		else:
 			return index(request, user_form=user_form)
 	return redirect('/')
+
+
+@login_required
+def submit(request):
+	if request.method == 'POST':
+		ribbit_form = RibbitForm(data=request.POST)
+		next_url = request.POST.get("next_url", '/')
+
+		if ribbit_form.is_valid():
+			ribbit = ribbit_form.save(commit=False)
+			ribbit.user = request.user
+			ribbit.save()
+			return redirect(next_url)
+		else:
+			return public(request, ribbit_form)
+	return redirect('/')
+
+@login_required
+def public(request, ribbit_form=None):
+	ribbit_form = ribbit_form or RibbitForm()
+	ribbits = Ribbit.objects.reverse()[:10]
+	return render(request, 'public.html', {'ribbit_form': ribbit_form, 'next_url': '/ribbits', 'ribbits': ribbits,
+		'username': request.user.username})
