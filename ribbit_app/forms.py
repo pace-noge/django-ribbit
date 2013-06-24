@@ -11,7 +11,7 @@ class UserCreateForm(UserCreationForm):
 	last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
 	username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
 	password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
-	password2 = forms.CharField(widget=forms.widget.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
+	password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
 
 	def is_valid(self):
 		form = super(UserCreateForm, self).is_valid()
