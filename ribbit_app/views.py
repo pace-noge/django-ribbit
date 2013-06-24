@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from ribbit_app.forms import UserCreateForm, AuthenticateForm, RibbitForm
 from ribbit_app.models import Ribbit
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 
 def index(request, auth_form=None, user_form=None):
 
@@ -72,3 +75,44 @@ def public(request, ribbit_form=None):
 	ribbits = Ribbit.objects.reverse()[:10]
 	return render(request, 'public.html', {'ribbit_form': ribbit_form, 'next_url': '/ribbits', 'ribbits': ribbits,
 		'username': request.user.username})
+
+def get_latest(user):
+	try:
+		return user.ribbit_set.order_by('-id')[0]
+	except IndexError:
+		return ""
+
+@login_required
+def users(request, username='', ribbit_form=None):
+	if username:
+		try:
+			user = User.objects.get(username=username)
+		except User.DoesNotExist:
+			raise Http404
+
+		ribbits = Ribbit.objects.filter(user=user.id)
+		if username == request.user.username or request.user.profile.follows.filter(user__username=username):
+			return render(request, 'user.html', {'user':user, 'ribbits': ribbits})
+
+		return render(request, 'user.html', {'user': user, 'ribbits': ribbits, 'follow':True})
+
+	users = User.objects.all().annotate(ribbit_count=Count('ribbit'))
+	ribbits = map(get_latest, users)
+	obj = zip(users, ribbits)
+	ribbit_form = ribbit_form or RibbitForm()
+	return render(request, 'profiles.html', {'obj':obj, 'next_url': '/users/', 
+		'ribbit_form': ribbit_form, 'username': request.user.username})
+
+
+
+@login_required
+def follow(request):
+	if request.method == 'POST':
+		follow_id = request.post.get('follow', False)
+		if follow_id:
+			try:
+				user = User.objects.get(id=follow_id)
+				request.user.profile.follows.add(user.profile)
+			except ObjectDoesNotExist:
+				return redirect('/users/')
+	return redirect('/users/')
