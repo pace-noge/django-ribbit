@@ -22,17 +22,18 @@
             {% if follow %}
             <form action="/follow" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="follow" value="{{ user.id }}">
-                <input type="submit" value="Follow">
+                <input type="hidden" name="follow" value="{{ user.id }}" />
+                <input type="submit" value="Follow" />
             </form>
             {% endif %}
         </div>
     </div>
- 
+    {% endblock %}
+    {% block ribbits %}
     <div class="panel left">
         <h1>{{ user.first_name }}'s Ribbits</h1>
         {% for ribbit in ribbits %}
-        <div class="ribbitWrapper">
+        <div class="well">
             <a href="/users/{{ user.username }}">
                 <img class="avatar" src="{{ user.profile.gravatar_url }}">
                 <span class="name">{{ ribbit.user.first_name }}</span>

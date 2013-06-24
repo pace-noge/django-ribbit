@@ -6,12 +6,12 @@ from ribbit_app.models import Ribbit
 
 
 class UserCreateForm(UserCreationForm):
-	email = forms.EmailField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Email'}))
-	first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'First Name'}))
-	last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
-	username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
-	password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
-	password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
+	email = forms.EmailField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Email', 'class':"input-medium"}))
+	first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'First Name', 'class':"input-medium"}))
+	last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name', 'class':"input-medium"}))
+	username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username', 'class':"input-medium"}))
+	password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password', 'class':"input-medium"}))
+	password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Confirm Password', 'class':"input-medium"}))
 
 	def is_valid(self):
 		form = super(UserCreateForm, self).is_valid()
@@ -34,7 +34,7 @@ class AuthenticateForm(AuthenticationForm):
 
 		for f, error in self.errors.iteritems():
 			if f != '__all__':
-				self.fields[f].widget.attrs_update({'class': 'error', 'value': strip_tags(error)})
+				self.fields[f].widget.attrs.update({'class': 'error', 'value': strip_tags(error)})
 		return form
 
 class RibbitForm(forms.ModelForm):

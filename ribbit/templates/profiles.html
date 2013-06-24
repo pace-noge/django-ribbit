@@ -8,15 +8,19 @@
             {% for field in ribbit_form %}{% csrf_token %}
             {{ field }}
             {% endfor %}
+            <br />
             <input type="hidden" value="{{ next_url }}" name="next_url">
-            <input type="submit" value="Ribbit!">
+            <br />
+            <input type="submit" value="Ribbit!" class="btn btn-large btn-primary">
             </form>
         </p>
     </div>
+    {% endblock %}
+    {% block ribbits %}
     <div class="panel left">
         <h1>Public Profiles</h1>
         {% for user, ribbit in obj %}
-        <div class="ribbitWrapper">
+        <div class="well">
             <a href="/users/{{ user.username }}">
                 <img class="avatar" src="{{ user.profile.gravatar_url }}">
                 <span class="name">{{ user.first_name }}</span>

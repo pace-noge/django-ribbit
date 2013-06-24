@@ -108,7 +108,7 @@ def users(request, username='', ribbit_form=None):
 @login_required
 def follow(request):
 	if request.method == 'POST':
-		follow_id = request.post.get('follow', False)
+		follow_id = request.POST.get('follow', False)
 		if follow_id:
 			try:
 				user = User.objects.get(id=follow_id)

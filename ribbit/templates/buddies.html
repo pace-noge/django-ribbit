@@ -9,19 +9,23 @@
     <div class="panel right">
         <h1>Create a Ribbit</h1>
         <p>
-            <form action="/submit" method="post">
+            <form action="/submit" method="post" class="form-horizontal">
             {% for field in ribbit_form %}{% csrf_token %}
             {{ field }}
             {% endfor %}
+            <br />
             <input type="hidden" value="{{ next_url }}" name="next_url">
-            <input type="submit" value="Ribbit!">
+            <br />
+            <input type="submit" value="Ribbit!" class="btn btn-large btn-primary">
             </form>
         </p>
     </div>
+    {% endblock %}
+    {% block ribbits %}
     <div class="panel left">
         <h1>Buddies' Ribbits</h1>
         {% for ribbit in ribbits %}
-        <div class="ribbitWrapper">
+        <div class="well">
             <a href="/users/{{ ribbit.user.username }}">
                 <img class="avatar" src="{{ ribbit.user.profile.gravatar_url }}">
                 <span class="name">{{ ribbit.user.first_name }}</span>
@@ -29,6 +33,7 @@
             @{{ ribbit.user.username }}
             <p>
                 {{ ribbit.content }}
+               
             </p>
         </div>
         {% endfor %}
